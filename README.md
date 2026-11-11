@@ -1,0 +1,2 @@
+# PlayerApp
+Sccore Games Management
