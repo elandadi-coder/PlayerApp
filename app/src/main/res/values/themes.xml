@@ -1,0 +1,3 @@
+<resources>
+    <style name="Theme.Samedi22" parent="android:Theme.Material.NoActionBar" />
+</resources>

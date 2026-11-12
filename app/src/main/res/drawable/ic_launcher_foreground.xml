@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Left blue half jersey badge -->
+    <path
+        android:fillColor="#2563EB"
+        android:pathData="M24,34 L46,34 L54,44 L54,76 L28,76 L28,50 L20,46 Z" />
+    <!-- Right orange half jersey badge -->
+    <path
+        android:fillColor="#F97316"
+        android:pathData="M84,34 L62,34 L54,44 L54,76 L80,76 L80,50 L88,46 Z" />
+    <!-- Center pitch circle -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M54,49 a7,7 0 1,0 0,14 a7,7 0 1,0 0,-14z" />
+</vector>
