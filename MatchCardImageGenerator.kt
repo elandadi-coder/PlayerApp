@@ -41,8 +41,9 @@ object MatchCardImageGenerator {
         blueAvg: Double? = null,
         orangeAvg: Double? = null
     ): Uri {
-        val width = 1280
-        val height = 720
+        // High Definition 1080p Canvas (1920 x 1080) for crystal clear display on all smartphones
+        val width = 1920
+        val height = 1080
 
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -50,8 +51,8 @@ object MatchCardImageGenerator {
         // 1. Realistic grass lawn with alternating vertical stripes
         drawPitchGrass(canvas, width, height)
 
-        // 2. White field lines
-        val pitchRect = RectF(60f, 40f, width - 60f, height - 40f)
+        // 2. White field lines (scaled to 1080p)
+        val pitchRect = RectF(90f, 60f, width - 90f, height - 60f)
         drawPitchMarkings(canvas, pitchRect)
 
         // 3. Top TV broadcast banner
@@ -66,11 +67,11 @@ object MatchCardImageGenerator {
             drawPlayerBadgeOnPitch(context, canvas, coord.player, coord.x, coord.y, coord.side)
         }
 
-        // 6. Save PNG and return FileProvider URI
+        // 6. Save lossless PNG and return FileProvider URI
         val outDir = File(context.cacheDir, "shared_cards").apply { mkdirs() }
         val file = File(outDir, "tactical_pitch_${match.id}_${System.currentTimeMillis()}.png")
         FileOutputStream(file).use { out ->
-            bitmap.compress(Bitmap.CompressFormat.PNG, 95, out)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)
         }
         return FileProvider.getUriForFile(context, "${context.packageName}.fileprovider", file)
     }
@@ -92,7 +93,7 @@ object MatchCardImageGenerator {
         val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#E5E7EB")
             style = Paint.Style.STROKE
-            strokeWidth = 3.5f
+            strokeWidth = 5f
         }
         val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#E5E7EB")
@@ -105,25 +106,25 @@ object MatchCardImageGenerator {
         // Halfway line & center circle
         val midX = r.centerX()
         canvas.drawLine(midX, r.top, midX, r.bottom, linePaint)
-        canvas.drawCircle(midX, r.centerY(), 90f, linePaint)
-        canvas.drawCircle(midX, r.centerY(), 5f, fillPaint)
+        canvas.drawCircle(midX, r.centerY(), 135f, linePaint)
+        canvas.drawCircle(midX, r.centerY(), 7.5f, fillPaint)
 
         // Left penalty area (Bleu)
-        val boxWidth = 190f
-        val boxHeight = 320f
+        val boxWidth = 285f
+        val boxHeight = 480f
         val boxTop = r.centerY() - boxHeight / 2f
         val boxBottom = r.centerY() + boxHeight / 2f
         canvas.drawRect(r.left, boxTop, r.left + boxWidth, boxBottom, linePaint)
 
         // Left goal box
-        val goalBoxW = 75f
-        val goalBoxH = 150f
+        val goalBoxW = 112f
+        val goalBoxH = 225f
         canvas.drawRect(r.left, r.centerY() - goalBoxH / 2f, r.left + goalBoxW, r.centerY() + goalBoxH / 2f, linePaint)
 
         // Left penalty spot & arc
-        val leftSpotX = r.left + 140f
-        canvas.drawCircle(leftSpotX, r.centerY(), 4.5f, fillPaint)
-        val leftArc = RectF(leftSpotX - 70f, r.centerY() - 70f, leftSpotX + 70f, r.centerY() + 70f)
+        val leftSpotX = r.left + 210f
+        canvas.drawCircle(leftSpotX, r.centerY(), 6.5f, fillPaint)
+        val leftArc = RectF(leftSpotX - 105f, r.centerY() - 105f, leftSpotX + 105f, r.centerY() + 105f)
         canvas.drawArc(leftArc, -55f, 110f, false, linePaint)
 
         // Right penalty area (Orange)
@@ -133,13 +134,13 @@ object MatchCardImageGenerator {
         canvas.drawRect(r.right - goalBoxW, r.centerY() - goalBoxH / 2f, r.right, r.centerY() + goalBoxH / 2f, linePaint)
 
         // Right penalty spot & arc
-        val rightSpotX = r.right - 140f
-        canvas.drawCircle(rightSpotX, r.centerY(), 4.5f, fillPaint)
-        val rightArc = RectF(rightSpotX - 70f, r.centerY() - 70f, rightSpotX + 70f, r.centerY() + 70f)
+        val rightSpotX = r.right - 210f
+        canvas.drawCircle(rightSpotX, r.centerY(), 6.5f, fillPaint)
+        val rightArc = RectF(rightSpotX - 105f, r.centerY() - 105f, rightSpotX + 105f, r.centerY() + 105f)
         canvas.drawArc(rightArc, 125f, 110f, false, linePaint)
 
         // Corner arcs
-        val cornerR = 20f
+        val cornerR = 30f
         canvas.drawArc(RectF(r.left - cornerR, r.top - cornerR, r.left + cornerR, r.top + cornerR), 0f, 90f, false, linePaint)
         canvas.drawArc(RectF(r.left - cornerR, r.bottom - cornerR, r.left + cornerR, r.bottom + cornerR), 270f, 90f, false, linePaint)
         canvas.drawArc(RectF(r.right - cornerR, r.top - cornerR, r.right + cornerR, r.top + cornerR), 90f, 90f, false, linePaint)
@@ -154,30 +155,30 @@ object MatchCardImageGenerator {
         orangeCount: Int,
         settings: AppSettings
     ) {
-        val bannerW = 680f
-        val bannerH = 54f
+        val bannerW = 880f
+        val bannerH = 64f
         val bannerLeft = (width - bannerW) / 2f
-        val bannerTop = 50f
+        val bannerTop = 28f
         val rect = RectF(bannerLeft, bannerTop, bannerLeft + bannerW, bannerTop + bannerH)
 
         // Subtle gradient container
         val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#0F172A")
-            setShadowLayer(14f, 0f, 6f, Color.parseColor("#80000000"))
+            setShadowLayer(16f, 0f, 8f, Color.parseColor("#90000000"))
         }
         val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#38BDF8")
             style = Paint.Style.STROKE
-            strokeWidth = 2.5f
+            strokeWidth = 3f
         }
-        canvas.drawRoundRect(rect, 27f, 27f, bgPaint)
-        canvas.drawRoundRect(rect, 27f, 27f, borderPaint)
+        canvas.drawRoundRect(rect, 32f, 32f, bgPaint)
+        canvas.drawRoundRect(rect, 32f, 32f, borderPaint)
 
         // Dot accents
         val blueDot = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.parseColor("#2563EB") }
         val orangeDot = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.parseColor("#F97316") }
-        canvas.drawCircle(rect.left + 24f, rect.centerY(), 6f, blueDot)
-        canvas.drawCircle(rect.right - 24f, rect.centerY(), 6f, orangeDot)
+        canvas.drawCircle(rect.left + 28f, rect.centerY(), 8f, blueDot)
+        canvas.drawCircle(rect.right - 28f, rect.centerY(), 8f, orangeDot)
 
         // Text title
         val hasScore = match.blueScore != null && match.orangeScore != null
@@ -187,14 +188,14 @@ object MatchCardImageGenerator {
             "MATCHS JB-T5 • $blueCount VS $orangeCount • BLEU VS ORANGE"
         }
 
-        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG).apply {
             color = Color.WHITE
-            textSize = 21f
+            textSize = 27f
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             textAlign = Paint.Align.CENTER
             letterSpacing = 0.05f
         }
-        canvas.drawText(titleText, rect.centerX(), rect.centerY() + 7f, textPaint)
+        canvas.drawText(titleText, rect.centerX(), rect.centerY() + 9f, textPaint)
     }
 
     private fun computeTeamPositions(
@@ -242,12 +243,12 @@ object MatchCardImageGenerator {
             val xMIL = if (isBlue) halfLeft + halfWidth * 0.62f else halfRight - halfWidth * 0.62f
             val xATT = if (isBlue) halfLeft + halfWidth * 0.85f else halfRight - halfWidth * 0.85f
 
-            gk?.let { results.add(PlayerCoords(it, xGK, pitch.centerY() + 8f, side)) }
-            d1?.let { results.add(PlayerCoords(it, xDEF, pitch.centerY() - 175f, side)) }
-            d2?.let { results.add(PlayerCoords(it, xDEF, pitch.centerY() + 190f, side)) }
-            m1?.let { results.add(PlayerCoords(it, xMIL, pitch.centerY() - 95f, side)) }
-            m2?.let { results.add(PlayerCoords(it, xMIL, pitch.centerY() + 105f, side)) }
-            a1?.let { results.add(PlayerCoords(it, xATT, pitch.centerY() + 8f, side)) }
+            gk?.let { results.add(PlayerCoords(it, xGK, pitch.centerY() + 10f, side)) }
+            d1?.let { results.add(PlayerCoords(it, xDEF, pitch.centerY() - 260f, side)) }
+            d2?.let { results.add(PlayerCoords(it, xDEF, pitch.centerY() + 280f, side)) }
+            m1?.let { results.add(PlayerCoords(it, xMIL, pitch.centerY() - 145f, side)) }
+            m2?.let { results.add(PlayerCoords(it, xMIL, pitch.centerY() + 160f, side)) }
+            a1?.let { results.add(PlayerCoords(it, xATT, pitch.centerY() + 10f, side)) }
 
             return results
         }
@@ -256,16 +257,15 @@ object MatchCardImageGenerator {
         val count = ordered.size
         for (i in 0 until count) {
             val p = ordered[i]
-            val progress = (i + 0.5f) / count
             val x = if (isBlue) {
-                halfLeft + 60f + (halfWidth - 120f) * (0.15f + 0.75f * (i.toFloat() / maxOf(1, count - 1)))
+                halfLeft + 90f + (halfWidth - 180f) * (0.15f + 0.75f * (i.toFloat() / maxOf(1, count - 1)))
             } else {
-                halfRight - 60f - (halfWidth - 120f) * (0.15f + 0.75f * (i.toFloat() / maxOf(1, count - 1)))
+                halfRight - 90f - (halfWidth - 180f) * (0.15f + 0.75f * (i.toFloat() / maxOf(1, count - 1)))
             }
             val ySpread = when (i % 3) {
                 0 -> pitch.centerY()
-                1 -> pitch.centerY() - 150f
-                else -> pitch.centerY() + 150f
+                1 -> pitch.centerY() - 220f
+                else -> pitch.centerY() + 220f
             }
             results.add(PlayerCoords(p, x, ySpread, side))
         }
@@ -280,12 +280,12 @@ object MatchCardImageGenerator {
         cy: Float,
         side: TeamSide
     ) {
-        val radius = 34f
+        val radius = 48f
 
         // 1. Shadow under badge
         val shadowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#60000000")
-            setShadowLayer(8f, 0f, 4f, Color.parseColor("#80000000"))
+            setShadowLayer(12f, 0f, 6f, Color.parseColor("#80000000"))
         }
         canvas.drawCircle(cx, cy, radius, shadowPaint)
 
@@ -305,18 +305,18 @@ object MatchCardImageGenerator {
         val ringPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#E2E8F0")
             style = Paint.Style.STROKE
-            strokeWidth = 3.5f
+            strokeWidth = 5f
         }
         val outerGlow = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = ringColor
             style = Paint.Style.STROKE
-            strokeWidth = 2f
+            strokeWidth = 3f
         }
         canvas.drawCircle(cx, cy, radius, ringPaint)
-        canvas.drawCircle(cx, cy, radius + 2f, outerGlow)
+        canvas.drawCircle(cx, cy, radius + 2.5f, outerGlow)
 
         // 4. Name & Position Label capsule below badge
-        drawPlayerNamePill(canvas, player, cx, cy + radius + 15f)
+        drawPlayerNamePill(canvas, player, cx, cy + radius + 22f)
     }
 
     private fun loadPlayerBitmapSafe(context: Context, photoUri: String?): Bitmap? {
@@ -334,8 +334,8 @@ object MatchCardImageGenerator {
                 BitmapFactory.decodeFile(photoUri, options)
             }
 
-            // Calculate sample size for target ~200px
-            val targetSize = 200
+            // Calculate sample size for target ~400px (crystal-clear badges)
+            val targetSize = 400
             var sampleSize = 1
             while (options.outWidth / (sampleSize * 2) >= targetSize && options.outHeight / (sampleSize * 2) >= targetSize) {
                 sampleSize *= 2
@@ -375,6 +375,8 @@ object MatchCardImageGenerator {
 
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             this.shader = shader
+            isFilterBitmap = true // Bilinear filtering for ultra-sharp photo scaling
+            isDither = true
         }
         canvas.drawCircle(cx, cy, radius, paint)
     }
@@ -451,30 +453,30 @@ object MatchCardImageGenerator {
         val pos = "[${player.position.shortLabel}]"
         val fullText = "$name $pos"
 
-        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        val textPaint = Paint(Paint.ANTI_ALIAS_FLAG or Paint.SUBPIXEL_TEXT_FLAG).apply {
             color = Color.WHITE
-            textSize = 14f
+            textSize = 20f
             typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
             textAlign = Paint.Align.CENTER
         }
 
         val textW = textPaint.measureText(fullText)
-        val pillW = maxOf(textW + 16f, 68f)
-        val pillH = 22f
+        val pillW = maxOf(textW + 24f, 96f)
+        val pillH = 32f
         val pillRect = RectF(cx - pillW / 2f, cy - pillH / 2f, cx + pillW / 2f, cy + pillH / 2f)
 
         val pillBg = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#E60F172A")
-            setShadowLayer(4f, 0f, 2f, Color.parseColor("#90000000"))
+            setShadowLayer(6f, 0f, 3f, Color.parseColor("#90000000"))
         }
         val pillBorder = Paint(Paint.ANTI_ALIAS_FLAG).apply {
             color = Color.parseColor("#475569")
             style = Paint.Style.STROKE
-            strokeWidth = 1f
+            strokeWidth = 1.5f
         }
-        canvas.drawRoundRect(pillRect, 11f, 11f, pillBg)
-        canvas.drawRoundRect(pillRect, 11f, 11f, pillBorder)
+        canvas.drawRoundRect(pillRect, 16f, 16f, pillBg)
+        canvas.drawRoundRect(pillRect, 16f, 16f, pillBorder)
 
-        canvas.drawText(fullText, cx, cy + 4.5f, textPaint)
+        canvas.drawText(fullText, cx, cy + 6.5f, textPaint)
     }
 }
