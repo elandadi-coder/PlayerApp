@@ -1,45 +1,56 @@
-name: Build Samedi 22h APK
-
+name: Build Matchs JB-T5 APK
 on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Récupérer le code source
         uses: actions/checkout@v4
-
       - name: Installer JDK 17
         uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: "17"
-
       - name: Configurer Android SDK 35
         run: |
           SDK_MANAGER=$(ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager | head -n 1)
           yes | "$SDK_MANAGER" --licenses > /dev/null 2>&1 || true
           "$SDK_MANAGER" "platform-tools" "platforms;android-35" "build-tools;35.0.0"
-
       - name: Configurer Gradle 8.9
         uses: gradle/actions/setup-gradle@v5
         with:
           gradle-version: "8.9"
           validate-wrappers: false
-
+      - name: Appliquer automatiquement les fichiers mis à jour
+        run: |
+          for f in *.kt; do
+            if [ -f "$f" ]; then
+              TARGET=$(find app/src/main/java -name "$f" | head -n 1)
+              if [ -n "$TARGET" ]; then
+                echo "Mise à jour : $f -> $TARGET"
+                mv -f "$f" "$TARGET"
+              fi
+            fi
+          done
+          for f in *.xml; do
+            if [ -f "$f" ]; then
+              TARGET=$(find app/src/main/res -name "$f" | head -n 1)
+              if [ -n "$TARGET" ]; then
+                echo "Mise à jour : $f -> $TARGET"
+                mv -f "$f" "$TARGET"
+              fi
+            fi
+          done
       - name: Lancer les tests unitaires
         run: gradle testDebugUnitTest
-
       - name: Compiler l'APK Debug
         run: gradle assembleDebug
-
       - name: Publier l'APK téléchargeable
         uses: actions/upload-artifact@v4
         with:
-          name: Samedi22-debug-apk
+          name: Matchs-JB-T5-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
