@@ -514,7 +514,7 @@ private fun PlayerEditorDialog(
                 OutlinedTextField(
                     value = phone,
                     onValueChange = { phone = it },
-                    label = { Text("Téléphone WhatsApp (ex: 2126...)") },
+                    label = { Text("Téléphone (SMS & WhatsApp, ex: 06... ou +212...)") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()

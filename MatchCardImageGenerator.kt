@@ -184,7 +184,7 @@ object MatchCardImageGenerator {
         val titleText = if (hasScore) {
             "RÉSULTAT • ${match.blueScore} - ${match.orangeScore} • ${settings.blueTeamName.uppercase()} vs ${settings.orangeTeamName.uppercase()}"
         } else {
-            "SAMEDI 22H00 • $blueCount VS $orangeCount • BLEU VS ORANGE"
+            "MATCHS JB-T5 • $blueCount VS $orangeCount • BLEU VS ORANGE"
         }
 
         val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {

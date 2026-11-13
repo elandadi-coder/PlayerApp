@@ -10,6 +10,7 @@ import com.foot22.samedi.data.local.MatchEntity
 import com.foot22.samedi.data.local.MatchParticipationEntity
 import com.foot22.samedi.data.local.PlayerEntity
 import com.foot22.samedi.data.model.AttendanceStatus
+import com.foot22.samedi.data.model.FeeMode
 import com.foot22.samedi.data.model.PaymentMethod
 import com.foot22.samedi.data.model.PlayerStatus
 import com.foot22.samedi.data.model.TransactionType
